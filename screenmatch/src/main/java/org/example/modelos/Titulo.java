@@ -1,6 +1,10 @@
 package org.example.modelos;
 
+import com.google.gson.annotations.SerializedName;
+import org.example.excecao.ErroDeCOnversaoDeAnoException;
+
 public class Titulo implements Comparable<Titulo>{
+
     private String nome;
     private int anoDeLancamento;
     private boolean incluidoNoPlano;
@@ -11,6 +15,15 @@ public class Titulo implements Comparable<Titulo>{
     public Titulo(String nome, int anoDeLancamento) {
         this.nome = nome;
         this.anoDeLancamento = anoDeLancamento;
+    }
+
+    public Titulo(TituloOmdbDTO meuTituloOmdbDto) {
+        this.nome = meuTituloOmdbDto.title();
+        if (meuTituloOmdbDto.year().length() > 4){
+            throw new ErroDeCOnversaoDeAnoException("Não consegui converter o ano de lancamento porque tem mais de 04 caracteres");
+        }
+        this.anoDeLancamento = Integer.valueOf(meuTituloOmdbDto.year());
+        this.duracaoEmMinutos = Integer.valueOf(meuTituloOmdbDto.runtime().substring(0,2));
     }
 
     public String getNome() {
@@ -66,5 +79,13 @@ public class Titulo implements Comparable<Titulo>{
     @Override
     public int compareTo(Titulo outroTitulo) {
         return this.getNome().compareTo(outroTitulo.getNome());
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Nome do filme: " + nome + '\n' +
+                "Ano de Lancamento: " + anoDeLancamento + '\n' +
+                "Duração em minutos: " + duracaoEmMinutos;
     }
 }
